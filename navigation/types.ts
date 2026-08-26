@@ -15,8 +15,18 @@ export type ClientTabParamList = {
   Profile: undefined;
 };
 
-export type CoiffeurStackParamList = {
+export type ClientStackParamList = {
+  ClientTabs: undefined;
+  BarberProfile: { barberId: string; barberName: string; barberPhoto: string; barberRating: number; barberCity: string; barberDistance: string; barberPrice: string; barberAvailable: boolean };
+  Booking: { barberName: string; barberPhoto: string; service: string };
+};
+
+export type CoiffeurTabParamList = {
   Dashboard: undefined;
+  GestionRDV: undefined;
+  Stats: undefined;
+  Portfolio: undefined;
+  Profil: undefined;
 };
 
 export type RootStackScreenProps<T extends keyof RootStackParamList> = NativeStackScreenProps<
@@ -26,10 +36,15 @@ export type RootStackScreenProps<T extends keyof RootStackParamList> = NativeSta
 
 export type ClientTabScreenProps<T extends keyof ClientTabParamList> = CompositeScreenProps<
   BottomTabScreenProps<ClientTabParamList, T>,
+  NativeStackScreenProps<ClientStackParamList>
+>;
+
+export type CoiffeurTabScreenProps<T extends keyof CoiffeurTabParamList> = CompositeScreenProps<
+  BottomTabScreenProps<CoiffeurTabParamList, T>,
   RootStackScreenProps<keyof RootStackParamList>
 >;
 
-export type CoiffeurStackScreenProps<T extends keyof CoiffeurStackParamList> = CompositeScreenProps<
-  NativeStackScreenProps<CoiffeurStackParamList, T>,
+export type ClientStackScreenProps<T extends keyof ClientStackParamList> = CompositeScreenProps<
+  NativeStackScreenProps<ClientStackParamList, T>,
   RootStackScreenProps<keyof RootStackParamList>
 >;

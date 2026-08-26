@@ -10,20 +10,43 @@ import HomeScreen from '../screens/client/HomeScreen';
 import SearchScreen from '../screens/client/SearchScreen';
 import RDVScreen from '../screens/client/RDVScreen';
 import ProfileScreen from '../screens/client/ProfileScreen';
+import BarberProfileScreen from '../screens/client/BarberProfileScreen';
+import BookingScreen from '../screens/client/BookingScreen';
 import DashboardCoiffeurScreen from '../screens/coiffeur/DashboardCoiffeurScreen';
+import GestionRDVScreen from '../screens/coiffeur/GestionRDVScreen';
+import StatsScreen from '../screens/coiffeur/StatsScreen';
+import PortfolioScreen from '../screens/coiffeur/PortfolioScreen';
+import ProfileCoiffeurScreen from '../screens/coiffeur/ProfileCoiffeurScreen';
 
 import { colors } from '../theme/colors';
-import type { ClientTabParamList, CoiffeurStackParamList, RootStackParamList } from './types';
+import type { ClientTabParamList, ClientStackParamList, CoiffeurTabParamList, RootStackParamList } from './types';
 
 const RootStack = createNativeStackNavigator<RootStackParamList>();
+const ClientStack = createNativeStackNavigator<ClientStackParamList>();
 const ClientTab = createBottomTabNavigator<ClientTabParamList>();
-const CoiffeurStack = createNativeStackNavigator<CoiffeurStackParamList>();
+const CoiffeurTab = createBottomTabNavigator<CoiffeurTabParamList>();
 
-const TAB_ICONS: Record<keyof ClientTabParamList, keyof typeof Ionicons.glyphMap> = {
+const CLIENT_TAB_ICONS: Record<keyof ClientTabParamList, keyof typeof Ionicons.glyphMap> = {
   Home: 'home',
   Search: 'search',
   RDV: 'calendar',
   Profile: 'person',
+};
+
+const COIFFEUR_TAB_ICONS: Record<keyof CoiffeurTabParamList, keyof typeof Ionicons.glyphMap> = {
+  Dashboard: 'grid',
+  GestionRDV: 'calendar',
+  Stats: 'stats-chart',
+  Portfolio: 'images',
+  Profil: 'person',
+};
+
+const COIFFEUR_TAB_LABELS: Record<keyof CoiffeurTabParamList, string> = {
+  Dashboard: 'Accueil',
+  GestionRDV: 'RDV',
+  Stats: 'Stats',
+  Portfolio: 'Portfolio',
+  Profil: 'Profil',
 };
 
 function ClientTabs() {
@@ -42,7 +65,7 @@ function ClientTabs() {
           />
         ),
         tabBarIcon: ({ color, size }) => (
-          <Ionicons name={TAB_ICONS[route.name as keyof ClientTabParamList]} color={color} size={size} />
+          <Ionicons name={CLIENT_TAB_ICONS[route.name as keyof ClientTabParamList]} color={color} size={size} />
         ),
       })}
     >
@@ -54,11 +77,43 @@ function ClientTabs() {
   );
 }
 
-function CoiffeurNavigator() {
+function ClientNavigator() {
   return (
-    <CoiffeurStack.Navigator screenOptions={{ headerShown: false }}>
-      <CoiffeurStack.Screen name="Dashboard" component={DashboardCoiffeurScreen} />
-    </CoiffeurStack.Navigator>
+    <ClientStack.Navigator screenOptions={{ headerShown: false }}>
+      <ClientStack.Screen name="ClientTabs" component={ClientTabs} />
+      <ClientStack.Screen name="BarberProfile" component={BarberProfileScreen} />
+      <ClientStack.Screen name="Booking" component={BookingScreen} />
+    </ClientStack.Navigator>
+  );
+}
+
+function CoiffeurTabs() {
+  return (
+    <CoiffeurTab.Navigator
+      screenOptions={({ route }) => ({
+        headerShown: false,
+        tabBarShowLabel: true,
+        tabBarActiveTintColor: colors.white,
+        tabBarInactiveTintColor: colors.gray,
+        tabBarStyle: styles.tabBar,
+        tabBarLabel: COIFFEUR_TAB_LABELS[route.name as keyof CoiffeurTabParamList],
+        tabBarBackground: () => (
+          <View
+            className="absolute inset-0 rounded-3xl bg-surface border border-surfaceBorder overflow-hidden"
+            style={{ borderCurve: 'continuous' }}
+          />
+        ),
+        tabBarIcon: ({ color, size }) => (
+          <Ionicons name={COIFFEUR_TAB_ICONS[route.name as keyof CoiffeurTabParamList]} color={color} size={size} />
+        ),
+      })}
+    >
+      <CoiffeurTab.Screen name="Dashboard" component={DashboardCoiffeurScreen} />
+      <CoiffeurTab.Screen name="GestionRDV" component={GestionRDVScreen} />
+      <CoiffeurTab.Screen name="Stats" component={StatsScreen} />
+      <CoiffeurTab.Screen name="Portfolio" component={PortfolioScreen} />
+      <CoiffeurTab.Screen name="Profil" component={ProfileCoiffeurScreen} />
+    </CoiffeurTab.Navigator>
   );
 }
 
@@ -78,8 +133,8 @@ export default function RootNavigator() {
     <NavigationContainer theme={navigationTheme}>
       <RootStack.Navigator screenOptions={{ headerShown: false }}>
         <RootStack.Screen name="Login" component={LoginScreen} />
-        <RootStack.Screen name="ClientApp" component={ClientTabs} />
-        <RootStack.Screen name="CoiffeurApp" component={CoiffeurNavigator} />
+        <RootStack.Screen name="ClientApp" component={ClientNavigator} />
+        <RootStack.Screen name="CoiffeurApp" component={CoiffeurTabs} />
       </RootStack.Navigator>
     </NavigationContainer>
   );

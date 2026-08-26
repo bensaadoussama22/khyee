@@ -5,6 +5,7 @@ import { Ionicons } from '@expo/vector-icons';
 import AppBackground from '../../components/AppBackground';
 import SurfaceCard from '../../components/SurfaceCard';
 import { colors } from '../../theme/colors';
+import type { ClientTabScreenProps } from '../../navigation/types';
 
 type FilterKey = 'all' | 'nearby' | 'topRated' | 'available';
 
@@ -33,7 +34,7 @@ const BARBERS: SearchBarber[] = [
   { id: '4', name: 'Style Houari', city: 'Tlemcen', rating: 4.3, distance: '2.4 km', price: '180 DA', available: true, photo: 'https://i.pravatar.cc/300?img=68' },
 ];
 
-export default function SearchScreen() {
+export default function SearchScreen({ navigation }: ClientTabScreenProps<'Search'>) {
   const [query, setQuery] = useState('');
   const [filter, setFilter] = useState<FilterKey>('all');
 
@@ -56,7 +57,7 @@ export default function SearchScreen() {
           <SurfaceCard className="flex-row items-center px-4 py-3 gap-2.5">
             <Ionicons name="search" size={18} color={colors.gray} />
             <TextInput
-              placeholder="Cherche un barbier khoya..."
+              placeholder="Cherche un barbier khyee..."
               placeholderTextColor={colors.gray}
               value={query}
               onChangeText={setQuery}
@@ -110,7 +111,19 @@ export default function SearchScreen() {
                   <Text className="text-accent text-xs ml-2">{item.price}</Text>
                 </View>
               </View>
-              <Pressable className="rounded-[14px] border border-surfaceBorder bg-[rgba(91,78,232,0.25)] px-3 py-2">
+              <Pressable
+                className="rounded-[14px] border border-surfaceBorder bg-[rgba(91,78,232,0.25)] px-3 py-2"
+                onPress={() => navigation.navigate('BarberProfile', {
+                  barberId: item.id,
+                  barberName: item.name,
+                  barberPhoto: item.photo,
+                  barberRating: item.rating,
+                  barberCity: item.city,
+                  barberDistance: item.distance,
+                  barberPrice: item.price,
+                  barberAvailable: item.available,
+                })}
+              >
                 <Text className="text-white text-xs font-semibold">Voir profil</Text>
               </Pressable>
             </SurfaceCard>

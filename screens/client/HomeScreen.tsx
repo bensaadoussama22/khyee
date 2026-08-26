@@ -1,5 +1,5 @@
-import React from 'react';
-import { ScrollView, Text, View } from 'react-native';
+import React, { useState } from 'react';
+import { Alert, ScrollView, Text, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import AppBackground from '../../components/AppBackground';
 import Header from '../../components/Header';
@@ -8,6 +8,7 @@ import PromoCard, { Promo } from '../../components/PromoCard';
 import BarberCard, { Barber } from '../../components/BarberCard';
 import RdvCard, { Rdv } from '../../components/RdvCard';
 import SurfaceCard from '../../components/SurfaceCard';
+import type { ClientTabScreenProps } from '../../navigation/types';
 
 const NEXT_RDV: Rdv | null = {
   id: '1',
@@ -44,14 +45,23 @@ const PROMOS: Promo[] = [
   },
 ];
 
-export default function HomeScreen() {
+export default function HomeScreen({ navigation }: ClientTabScreenProps<'Home'>) {
+  const [nextRdv, setNextRdv] = useState(NEXT_RDV);
+
+  const handleCancel = () => {
+    Alert.alert('Annuler le rendez-vous', 'Veux-tu vraiment annuler ce rendez-vous ?', [
+      { text: 'Garder', style: 'cancel' },
+      { text: 'Annuler', style: 'destructive', onPress: () => setNextRdv(null) },
+    ]);
+  };
+
   return (
     <AppBackground>
       <SafeAreaView className="flex-1" edges={['top']}>
         <Header city="Tlemcen" notifCount={2} />
 
         <ScrollView contentContainerClassName="px-5 pb-10" showsVerticalScrollIndicator={false}>
-          <Text className="font-heading text-white text-2xl mb-1">Sba7 el kheir, Amine 👋</Text>
+          <Text className="font-heading text-white text-2xl mb-1">Sba7 el kheir, Khyee 👋</Text>
           <Text className="text-gray text-sm mb-5">Trouve ton barbier idéal</Text>
 
           <ScrollView
@@ -68,19 +78,33 @@ export default function HomeScreen() {
           </ScrollView>
 
           <SectionTitle>Prochain rendez-vous 📅</SectionTitle>
-          {NEXT_RDV ? (
+          {nextRdv ? (
             <View className="mb-3.5">
-              <RdvCard rdv={NEXT_RDV} />
+              <RdvCard rdv={nextRdv} onCancel={handleCancel} />
             </View>
           ) : (
             <SurfaceCard className="items-center py-8 mb-7">
-              <Text className="text-gray text-sm text-center">Aucun RDV à venir{'\n'}Réserve maintenant khoya ✂️</Text>
+              <Text className="text-gray text-sm text-center">Aucun RDV à venir{'\n'}Réserve maintenant khyee ✂️</Text>
             </SurfaceCard>
           )}
 
           <SectionTitle>Top Khyee 🔥</SectionTitle>
           {TOP_BARBERS.map((barber) => (
-            <BarberCard key={barber.id} barber={barber} variant="vertical" />
+            <BarberCard
+              key={barber.id}
+              barber={barber}
+              variant="vertical"
+              onPress={() => navigation.navigate('BarberProfile', {
+                barberId: barber.id,
+                barberName: barber.name,
+                barberPhoto: barber.photo ?? '',
+                barberRating: barber.rating,
+                barberCity: barber.city,
+                barberDistance: barber.distance,
+                barberPrice: barber.price ?? '',
+                barberAvailable: true,
+              })}
+            />
           ))}
         </ScrollView>
       </SafeAreaView>

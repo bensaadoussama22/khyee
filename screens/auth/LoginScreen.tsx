@@ -12,7 +12,7 @@ export default function LoginScreen({ navigation }: RootStackScreenProps<'Login'
         <View className="flex-1 items-center justify-center px-7">
           <Image source={require('../../assets/logo.png')} className="w-[140px] h-[140px] mb-8" resizeMode="contain" />
 
-          <Text className="font-heading text-white text-[26px] text-center mb-2.5">Bienvenue khoya 👋</Text>
+          <Text className="font-heading text-white text-[26px] text-center mb-2.5">Bienvenue khyee 👋</Text>
           <Text className="text-gray text-[15px] text-center mb-12">Connecte-toi pour continuer</Text>
 
           <View className="w-full gap-4">

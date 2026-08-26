@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Image, Pressable, ScrollView, Text, View } from 'react-native';
+import { Alert, Image, Pressable, ScrollView, Text, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { Ionicons } from '@expo/vector-icons';
 import AppBackground from '../../components/AppBackground';
@@ -90,7 +90,7 @@ function InfoRow({
   );
 }
 
-function UpcomingDetail({ rdv }: { rdv: UpcomingAppointment }) {
+function UpcomingDetail({ rdv, onCancel }: { rdv: UpcomingAppointment; onCancel: () => void }) {
   return (
     <View className="mb-7">
       <SurfaceCard className="p-0 mb-4 overflow-hidden">
@@ -143,7 +143,7 @@ function UpcomingDetail({ rdv }: { rdv: UpcomingAppointment }) {
 </SurfaceCard>
       <View className="flex-row gap-3 mb-4">
         <SurfaceButton label="Itinéraire" variant="outline" className="flex-1" icon={<Ionicons name="navigate-outline" size={16} color={colors.white} />} />
-        <SurfaceButton label="Annuler" variant="danger" className="flex-1" />
+        <SurfaceButton label="Annuler" variant="danger" className="flex-1" onPress={onCancel} />
       </View>
 
       <Pressable className="flex-row items-center justify-center gap-2 py-2">
@@ -156,6 +156,14 @@ function UpcomingDetail({ rdv }: { rdv: UpcomingAppointment }) {
 
 export default function RDVScreen() {
   const [tab, setTab] = useState<Tab>('upcoming');
+  const [nextAppointment, setNextAppointment] = useState(NEXT_APPOINTMENT);
+
+  const handleCancel = () => {
+    Alert.alert('Annuler le rendez-vous', 'Veux-tu vraiment annuler ce rendez-vous ?', [
+      { text: 'Garder', style: 'cancel' },
+      { text: 'Annuler', style: 'destructive', onPress: () => setNextAppointment(null) },
+    ]);
+  };
 
   return (
     <AppBackground>
@@ -179,12 +187,12 @@ export default function RDVScreen() {
 
         <ScrollView contentContainerClassName="px-5 pb-10" showsVerticalScrollIndicator={false}>
           {tab === 'upcoming' ? (
-            NEXT_APPOINTMENT ? (
-              <UpcomingDetail rdv={NEXT_APPOINTMENT} />
+            nextAppointment ? (
+              <UpcomingDetail rdv={nextAppointment} onCancel={handleCancel} />
             ) : (
               <View className="items-center mt-20">
                 <Text className="text-gray text-[15px] text-center leading-[22px]">
-                  Aucun RDV à venir{'\n'}Réserve maintenant khoya ✂️
+                  Aucun RDV à venir{'\n'}Réserve maintenant khyee ✂️
                 </Text>
               </View>
             )
